@@ -1,4 +1,4 @@
-from typer import Typer
+from typer import Typer, Option
 from rich.console import Console
 from app.utils.ui import PanelDisplay, TextStyles
 from app.commands import init
@@ -9,25 +9,28 @@ app = Typer(
     name="devmate",
     help="Your friendly local development companion.",
     add_completion=True,
-    no_args_is_help=True
+    no_args_is_help=True,
+    rich_markup_mode="rich"
 )
 
 app.command(
     name="init",
-    help="Initialize devmate"
+    short_help="Checks if essential tools are installed.",
 )(init.init)
 
 @app.command(
     name="version",
-    help="Version of devmate"
+    help="Show the current [bold cyan]version[/bold cyan] of devmate."
 )
-def version():
+def version(
+    help="Show the current [bold cyan]version[/bold cyan] of devmate."
+):
     TextStyles().style_text("devmate 0.1.0", style="blue")
 
 
 @app.command(
     name="about",
-    help="About devmate"
+    help="The [bold]about[/bold] command displays information about devmate."
 )
 def about():
     PanelDisplay().print_panel(
