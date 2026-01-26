@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devmate"
+version = "0.1.0"
+description = "The friendly internal developer platform CLI."
+dependencies = [
+    "typer[all]",
+    "rich",  
+    "docker",
+]
+requires-python = ">=3.9"
+
+[project.scripts]
+devmate = "app.main:app"
+devctl = "app.main:app"
+mate = "app.main:app"
