@@ -1,5 +1,7 @@
 from typer import Typer
 from rich.console import Console
+from app.utils.ui import PanelDisplay, TextStyles
+from app.commands import init
 
 console = Console()
 
@@ -10,12 +12,17 @@ app = Typer(
     no_args_is_help=True
 )
 
+app.command(
+    name="init",
+    help="Initialize devmate"
+)(init.init)
+
 @app.command(
     name="version",
     help="Version of devmate"
 )
 def version():
-    console.print("devmate 0.1.0")
+    TextStyles().style_text("devmate 0.1.0", style="blue")
 
 
 @app.command(
@@ -23,14 +30,16 @@ def version():
     help="About devmate"
 )
 def about():
-    console.print(
+    PanelDisplay().print_panel(
+        "About devmate",
         """
-        devmate 0.1.0
+        devmate
         A versatile CLI tool built to enhance your local development experience,
         providing a suite of utilities to manage your projects more efficiently.
-        """
+        """, 
+        border_style="gray50", 
+        subtitle="Version 0.1.0"
     )
-
 
 if __name__ == "__main__": 
     app()
