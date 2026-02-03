@@ -1,3 +1,6 @@
-def vprint(verbose: bool, fn, message: str):
+def vprint(message: str, verbose: bool = False, fn=None, **kwargs): 
     if verbose:
-        fn(message)
+        if fn:
+            fn(message, **kwargs)
+        else:
+            print(message)

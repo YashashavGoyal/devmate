@@ -1,7 +1,8 @@
-from typer import Typer, Option
+from typer import Typer
 from rich.console import Console
-from app.utils.ui import PanelDisplay, TextStyles
-from app.commands import init
+
+from app.utils import PanelDisplay, TextDisplay
+from app.commands import init, health
 
 console = Console()
 
@@ -12,28 +13,34 @@ app = Typer(
     no_args_is_help=True,
     rich_markup_mode="rich"
 )
-
+# devmate init
 app.command(
     name="init",
     short_help="Checks if essential tools are installed.",
-)(init.init)
+)(init)
 
+# devmate health
+app.command(
+    name="health",
+    short_help="Checks if the local application is running and responding.",
+)(health)
+
+# devmate version
 @app.command(
     name="version",
     help="Show the current [bold cyan]version[/bold cyan] of devmate."
 )
-def version(
-    help="Show the current [bold cyan]version[/bold cyan] of devmate."
-):
-    TextStyles().style_text("devmate 0.1.0", style="blue")
+def version():
+    TextDisplay.style_text("devmate: 0.2.0", style="blue")
 
 
+# devmate about
 @app.command(
     name="about",
     help="The [bold]about[/bold] command displays information about devmate."
 )
 def about():
-    PanelDisplay().print_panel(
+    PanelDisplay.print_panel(
         "About devmate",
         """
         devmate
@@ -41,7 +48,7 @@ def about():
         providing a suite of utilities to manage your projects more efficiently.
         """, 
         border_style="gray50", 
-        subtitle="Version 0.1.0"
+        subtitle="Version 0.2.0"
     )
 
 if __name__ == "__main__": 

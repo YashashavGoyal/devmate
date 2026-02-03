@@ -1,49 +1,49 @@
-from rich.console import Console
+from rich.console import Console, Group
 from rich.table import Table
 from rich.panel import Panel
 from rich.text import Text
+from rich.json import JSON
 from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeElapsedColumn
 
 console = Console()
 
-class TextStyles:
+class TextDisplay:
     INFO = "blue"
     WARNING = "yellow"
     ERROR = "red"
     SUCCESS = "green"
 
-    def style_text(self, text: str, style: str):
+    @staticmethod
+    def style_text(text: str, style: str):
         console.print(f"[{style}]{text}[/{style}]")
     
-    def success_text(self, text: str, style: str = ""):
-        if style:
-            style_n = style + " " + self.SUCCESS
-        else:
-            style_n = self.SUCCESS
-        self.style_text(text, style_n)
+    @staticmethod
+    def success_text(text: str, style: str = ""):
+        style_n = f"{style} {TextDisplay.SUCCESS}".strip()
+        TextDisplay.style_text(text, style_n)
 
-    def warn_text(self, text: str, style: str = ""):
-        if style:
-            style_n = style + " " + self.WARNING
-        else:
-            style_n = self.WARNING
-        self.style_text(text, style_n)
+    @staticmethod
+    def warn_text(text: str, style: str = ""):
+        style_n = f"{style} {TextDisplay.WARNING}".strip()
+        TextDisplay.style_text(text, style_n)
     
-    def error_text(self, text: str, style: str = ""):
-        if style:
-            style_n = style + " " + self.ERROR
-        else:
-            style_n = self.ERROR
-        self.style_text(text, style_n)
+    @staticmethod
+    def error_text(text: str, style: str = ""):
+        style_n = f"{style} {TextDisplay.ERROR}".strip()
+        TextDisplay.style_text(text, style_n)
     
-    def info_text(self, text: str, style: str = ""):
-        if style:
-            style_n = style + " " + self.INFO
-        else:
-            style_n = self.INFO
-        self.style_text(text, style_n) 
+    @staticmethod
+    def info_text(text: str, style: str = ""):
+        style_n = f"{style} {TextDisplay.INFO}".strip()
+        TextDisplay.style_text(text, style_n) 
     
-    def print_panel(self, title: str, content: str, border_style: str = "blue", subtitle: str = None, subtitle_align: str = "right"):
+    @staticmethod
+    def print_json( json:dict, style: str = "White"):
+        json_obj = JSON.from_data(json, indent=4)
+        console.print(json_obj, style=style)
+    
+    @staticmethod
+    def print_panel(title: str, content: str, border_style: str = "blue", subtitle: str = None, subtitle_align: str = "right"):
         panel = Panel(content, title=title, title_align="left", border_style=border_style, style="white", subtitle=subtitle, subtitle_align=subtitle_align)
         console.print(panel)
 
@@ -53,24 +53,43 @@ class PanelDisplay:
     INFO = "bold blue"
     WARNING = "bold yellow"    
 
-    def print_panel(self, title: str, content: str, border_style: str = "blue", subtitle: str = None, subtitle_align: str = "right"):
+    @staticmethod
+    def print_panel(title: str, content: str, border_style: str = "blue", subtitle: str = None, subtitle_align: str = "right"):
         panel = Panel(content, title=title, title_align="left", border_style=border_style, style="white", subtitle=subtitle, subtitle_align=subtitle_align)
         console.print(panel)
 
-    def print_error(self, title: str, content: str):
-        self.print_panel(title, content, border_style=self.ERROR)
+    @staticmethod
+    def print_error(title: str, content: str):
+        PanelDisplay.print_panel(title, content, border_style=PanelDisplay.ERROR)
 
-    def print_success(self, title: str, content: str):
-        self.print_panel(title, content, border_style=self.SUCCESS)
+    @staticmethod
+    def print_success(title: str, content: str):
+        PanelDisplay.print_panel(title, content, border_style=PanelDisplay.SUCCESS)
     
-    def print_info(self, title: str, content: str):
-        self.print_panel(title, content, border_style=self.INFO)
+    @staticmethod
+    def print_info(title: str, content: str):
+        PanelDisplay.print_panel(title, content, border_style=PanelDisplay.INFO)
     
-    def print_warning(self, title: str, content: str):
-        self.print_panel(title, content, border_style=self.WARNING)
+    @staticmethod
+    def print_warning(title: str, content: str):
+        PanelDisplay.print_panel(title, content, border_style=PanelDisplay.WARNING)
 
+    @staticmethod
+    def print_json( title: str, json: dict, content: str = "", title_align: str = "left", border_style:str = "gray50"):
+        body = Group(
+            content,
+            JSON.from_data(json, indent=4)
+        )
+        panel = Panel(
+            body,
+            title=title,
+            title_align=title_align,
+            border_style=border_style,
+        )
+        console.print(panel)
+
+    @staticmethod
     def print_multi_style_panel(
-            self, 
             title: str, 
             content_parts: list, 
             border_style: str = "blue bold",
@@ -89,10 +108,8 @@ class PanelDisplay:
         console.print(panel)
 
 class Prompt:
-    def __init__(self):
-        self.styles = TextStyles()
-
-    def ask(self, question: str, choices: list = None) -> str:
+    @staticmethod
+    def ask(question: str, choices: list = None) -> str:
         if choices:
             choice_str = "/".join(choices)
             prompt = f"{question} ({choice_str}): "
@@ -100,23 +117,26 @@ class Prompt:
                 response = console.input(prompt)
                 if response in choices:
                     return response
-                self.styles.error_text(f"Invalid choice. Please choose from: {', '.join(choices)}")
+                TextDisplay.error_text(f"Invalid choice. Please choose from: {', '.join(choices)}")
         else:
             prompt = f"{question}: "
             return console.input(prompt)
     
-    def confirm(self, question: str) -> bool:
+    @staticmethod
+    def confirm(question: str) -> bool:
         response = console.input(f"{question} (y/n): ").strip().lower()
         while response not in ['y', 'yes', 'n', 'no']:
-             self.styles.error_text("Invalid input. Please enter 'y' or 'n'.")
+             TextDisplay.error_text("Invalid input. Please enter 'y' or 'n'.")
              response = console.input(f"{question} (y/n): ").strip().lower()
         return response in ['y', 'yes']
     
-    def password(self, prompt: str) -> str:
+    @staticmethod
+    def password(prompt: str) -> str:
         from getpass import getpass
         return getpass(prompt + ": ")
     
-    def select(self, question: str, options: list) -> str:
+    @staticmethod
+    def select(question: str, options: list) -> str:
         console.print(f"{question}")
         for idx, option in enumerate(options, start=1):
             console.print(f"[{idx}] {option}")
@@ -127,31 +147,42 @@ class Prompt:
                 if 1 <= choice <= len(options):
                     return options[choice - 1]
                 else:
-                    self.styles.error_text(f"Please enter a number between 1 and {len(options)}.")
+                    TextDisplay.error_text(f"Please enter a number between 1 and {len(options)}.")
             except ValueError:
-                self.styles.error_text("Invalid input. Please enter a number.")
+                TextDisplay.error_text("Invalid input. Please enter a number.")
 
-class ProgressBar:    
-    def __init__(self, total: int, description: str = "Processing"):
+class ProgressBar:
+    def __init__(self, total: int, description: str = "Processing", console=None):
         self.progress = Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
             TimeElapsedColumn(),
-            console=console
+            console=console,
         )
         self.task = self.progress.add_task(description, total=total)
 
     def __enter__(self):
         self.progress.start()
         return self
-    
+
     def __exit__(self, exc_type, exc_value, traceback):
         self.progress.stop()
+        return False
 
     def advance(self, step: int = 1):
         self.progress.advance(self.task, step)
+
+    def update(self, completed: int):
+        self.progress.update(self.task, completed=completed)
+
+    def set_description(self, description: str):
+        self.progress.update(self.task, description=description)
+
+    def finish(self):
+        task = self.progress.tasks[0]
+        self.progress.update(task.id, completed=task.total)
 
 class TableDisplay:
     def __init__(self, title: str, columns: list, style: str = "cyan"):

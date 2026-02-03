@@ -4,14 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "devmate"
-version = "0.1.0"
+version = "0.2.0"
 description = "The friendly internal developer platform CLI."
 dependencies = [
     "typer[all]",
     "rich",  
     "docker",
+    "requests",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.scripts]
 devmate = "app.main:app"
