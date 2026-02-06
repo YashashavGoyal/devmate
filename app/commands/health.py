@@ -1,6 +1,6 @@
 from typer import Option
 
-from app.servicies import check_health
+from app.services import check_health
 from app.utils import TextDisplay, ProgressBar
 
 def health(
