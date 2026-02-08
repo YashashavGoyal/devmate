@@ -1,5 +1,7 @@
 import time
 import requests
+import socket
+from python_on_whales import docker
 from requests.exceptions import RequestException, ConnectionError, Timeout
 
 from app.utils import ProgressBar
@@ -63,3 +65,36 @@ def check_health(
             time.sleep(delay)
 
     return error
+
+def check_host_port(port: int, host: str = "127.0.0.1", timeout=2) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except Exception:
+        return False
+
+
+def check_internal_tcp(
+    source_container: str,
+    target_service: str,
+    port: int,
+) -> bool:
+    try:
+        docker.container.exec(
+            source_container,
+            ["nc", "-z", target_service, str(port)],
+        )
+        return True
+    except Exception:
+        return False
+
+
+def has_nc(container: str) -> bool:
+    """
+    Checks if 'nc' (netcat) is available in the container.
+    """
+    try:
+        docker.container.exec(container, ["which", "nc"])
+        return True
+    except Exception:
+        return False

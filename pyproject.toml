@@ -9,9 +9,10 @@ description = "The friendly internal developer platform CLI."
 dependencies = [
     "typer[all]",
     "rich",  
-    "docker",
+    "python-on-whales",
     "requests",
-    "GitPython"
+    "GitPython",
+    "PyYAML"
 ]
 requires-python = ">=3.10"
 

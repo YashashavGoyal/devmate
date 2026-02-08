@@ -2,7 +2,7 @@ from typer import Typer
 from rich.console import Console
 
 from app.utils import PanelDisplay, TextDisplay
-from app.commands import init, health, clone
+from app.commands import init, health, clone, up
 
 console = Console()
 
@@ -30,6 +30,12 @@ app.command(
     name="clone",
     short_help="Clones the git repository in your local system"
 )(clone)
+
+# devmate up
+app.command(
+    name="up",
+    short_help="Start the application services.",
+)(up)
 
 # devmate version
 @app.command(
