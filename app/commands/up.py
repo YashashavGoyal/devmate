@@ -74,7 +74,14 @@ def up(
             service_container_map = {}
             if containers:
                 for c in containers:
-                    svc_name = c.labels.get("com.docker.compose.service")
+                    # Check for labels in potential locations
+                    labels = {}
+                    if hasattr(c, 'labels'):
+                         labels = c.labels
+                    elif hasattr(c, 'config') and hasattr(c.config, 'labels'):
+                         labels = c.config.labels
+                    
+                    svc_name = labels.get("com.docker.compose.service")
                     if svc_name:
                         service_container_map[svc_name] = c
 
@@ -89,7 +96,14 @@ def up(
                     if not has_nc(c.name):
                         continue
                     
-                    service_name = c.labels.get("com.docker.compose.service")
+                    # Check for labels in potential locations
+                    labels = {}
+                    if hasattr(c, 'labels'):
+                         labels = c.labels
+                    elif hasattr(c, 'config') and hasattr(c.config, 'labels'):
+                         labels = c.config.labels
+                    
+                    service_name = labels.get("com.docker.compose.service")
                     if service_name and service_name in exposed_services:
                         candidate_exposed = c
                         break 
