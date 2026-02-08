@@ -165,7 +165,7 @@ def up(
                             target_host = name
                             if name in service_container_map:
                                 target_host = service_container_map[name].name
-                            TextDisplay.info_text(f"Checking {target_host}:{target_port} from {source_container.name}")
+                            TextDisplay.style_text(f"Checking {target_host}:{target_port} from {source_container.name}", style="cyan")
                             is_up = check_internal_tcp(source_container.name, target_host, target_port)
                             status = "UP" if is_up else "DOWN"
                             details = f"{target_host}:{target_port} from {source_container.name}"
@@ -208,7 +208,7 @@ def up(
                 if not port:
                     # Case 1: auto-map exposed ports
                     port = [f"{p}:{p}" for p in exposed_ports]
-                    TextDisplay.info_text(f"No ports provided. Auto-mapping exposed ports: {port}")
+                    TextDisplay.warn_text(f"No ports provided. Auto-mapping exposed ports: {port}")
                 else: 
                     # Case 2: validate user provided ports and merge missing exposed ports
                     user_mapped_container_ports = set()
@@ -229,10 +229,10 @@ def up(
                             added_ports.append(mapping)
                     
                     if added_ports:
-                        TextDisplay.info_text(f"Added missing exposed ports: {added_ports}")
+                        TextDisplay.warn_text(f"Added missing exposed ports: {added_ports}")
 
             img = build_dockerfile(path=path)
-            TextDisplay.info_text(f"{img} is completely build ....")
+            TextDisplay.warn_text(f"{img} is completely build ....")
 
             container = run_container(
                 image_name=img,
@@ -243,9 +243,9 @@ def up(
             
             time.sleep(2)
             
-            TextDisplay.info_text(f"Starting {container} ....")
+            TextDisplay.warn_text(f"Starting {container} ....")
 
-            TextDisplay.info_text("Perfoming health check ....")
+            TextDisplay.warn_text("Perfoming health check ....")
             host_port = [int(p.split(":",1)[0]) for p in port]
             
             table = TableDisplay(
