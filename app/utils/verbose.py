@@ -1,6 +1,5 @@
-def vprint(message: str, verbose: bool = False, fn=None, **kwargs): 
+from app.utils import TextDisplay
+
+def vprint(message: str, verbose: bool = False, style: str = "cyan") -> None: 
     if verbose:
-        if fn:
-            fn(message, **kwargs)
-        else:
-            print(message)
+        TextDisplay.style_text(message, style=style)

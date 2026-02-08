@@ -100,6 +100,13 @@ def build_dockerfile(
 
     return image_name
 
+def normalize_ports(port_list: list[str]) -> list[tuple]:
+    published = []
+    for p in port_list or []:
+        host, container = p.split(":", 1)
+        published.append((container, host))
+    return published
+
 def run_container(
     image_name: str,
     container_name: str | None = None,
@@ -123,6 +130,7 @@ def run_container(
         else:
             raise RuntimeError("Container Already Exist")
 
+    ports = normalize_ports(port_list=ports)
 
     docker.container.run(
         image=image_name, 

@@ -1,6 +1,6 @@
 from typer import Option
 import shutil
-from app.utils.ui import TextDisplay, TableDisplay
+from app.utils import TextDisplay, TableDisplay
 from app.utils import vprint
 
 def check_tool(tool_name: str, verbose: bool) -> bool:
@@ -9,10 +9,10 @@ def check_tool(tool_name: str, verbose: bool) -> bool:
     path = shutil.which(tool_name)
 
     if not path:
-        vprint(f"{tool_name} is missing!", verbose=verbose, fn=TextDisplay.error_text)
+        vprint(f"{tool_name} is missing!", verbose=verbose, style="red")
         return False
 
-    vprint(f"{tool_name} is installed and available!", verbose=verbose, fn=TextDisplay.success_text)
+    vprint(f"{tool_name} is installed and available!", verbose=verbose, style="green")
     return True
 
 
@@ -54,7 +54,7 @@ def init(
 
         # 3. Check Python
         if check_tool("python3", False):
-            vprint(verbose, TextDisplay.success_text, "python3 is installed and available!")
+            vprint("python3 is installed and available!", verbose=verbose, style="green")
             table_ok.add_row(["Python", "Installed", "Python is installed and available!"])
         elif check_tool("python", verbose):
             table_ok.add_row(["Python", "Installed", "Python is installed and available!"])

@@ -43,7 +43,7 @@ app.command(
     help="Show the current [bold cyan]version[/bold cyan] of devmate."
 )
 def version():
-    TextDisplay.style_text("devmate: 0.3.0", style="blue")
+    TextDisplay.style_text("devmate: 0.3.1", style="blue")
 
 
 # devmate about
@@ -60,7 +60,7 @@ def about():
         providing a suite of utilities to manage your projects more efficiently.
         """, 
         border_style="gray50", 
-        subtitle="Version 0.3.0"
+        subtitle="Version 0.3.1"
     )
 
 if __name__ == "__main__": 
