@@ -20,6 +20,7 @@ from .docker_svc import (
     build_dockerfile,
     get_project_containers,
     get_container_health,
+    get_image_exposed_ports,
     ConfigType,
     PullPolicy
 )
@@ -41,6 +42,7 @@ __all__ = [
     "build_dockerfile",
     "get_project_containers",
     "get_container_health",
+    "get_image_exposed_ports",
     "ConfigType",
     "PullPolicy"
 ]

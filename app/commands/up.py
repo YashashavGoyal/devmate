@@ -21,12 +21,13 @@ from app.services import (
     get_project_containers,
     get_container_health,
     has_nc,
+    get_image_exposed_ports,
     ConfigType
 )
 
 def up(
     path: str = Option(".", "--path", help="Path where the config file is present"),
-    port: List[str] = Option(["8000:8000"], "-p", "--port", help="Port mappings in HOST:CONTAINER format (e.g. -p 8080:80)"),
+    port: List[str] = Option([], "-p", "--port", help="Port mappings in HOST:CONTAINER format (e.g. -p 8080:80)"),
     pull: str = Option("missing", help="Pull policy: always, missing, never. for compose"),
     force: bool = Option(False, "-f", "--force", help="Force restart container")
 ):
@@ -178,6 +179,39 @@ def up(
 
 
         if config_mode == ConfigType.DOCKERFILE:
+            # Check exposed ports
+            dockerfile_path = Path(path).resolve() / "Dockerfile"
+            exposed_ports = get_image_exposed_ports(str(dockerfile_path))
+            
+            # User ports are in format HOST:CONTAINER
+            # We need to check if CONTAINER port is in exposed_ports
+            if exposed_ports:
+                if not port:
+                    # Case 1: auto-map exposed ports
+                    port = [f"{p}:{p}" for p in exposed_ports]
+                    TextDisplay.info_text(f"No ports provided. Auto-mapping exposed ports: {port}")
+                else: 
+                    # Case 2: validate user provided ports and merge missing exposed ports
+                    user_mapped_container_ports = set()
+                    for p in port:
+                        parts = p.split(":")
+                        if len(parts) >= 2:
+                            container_port = parts[-1]
+                            user_mapped_container_ports.add(container_port)
+                            if container_port not in exposed_ports:
+                                TextDisplay.warn_text(f"Warning: Port {container_port} is mapped but not exposed in Dockerfile (Exposed: {', '.join(exposed_ports)})")
+                    
+                    # Add missing exposed ports
+                    added_ports = []
+                    for ep in exposed_ports:
+                        if ep not in user_mapped_container_ports:
+                            mapping = f"{ep}:{ep}"
+                            port.append(mapping)
+                            added_ports.append(mapping)
+                    
+                    if added_ports:
+                        TextDisplay.info_text(f"Added missing exposed ports: {added_ports}")
+
             img = build_dockerfile(path=path)
             TextDisplay.info_text(f"{img} is completely build ....")
 

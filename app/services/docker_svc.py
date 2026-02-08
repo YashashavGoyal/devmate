@@ -1,4 +1,4 @@
-from python_on_whales import docker
+from python_on_whales import docker, DockerClient
 from pathlib import Path
 from enum import Enum
 
@@ -65,12 +65,15 @@ def start_compose(
     if pull and pull not in {p.value for p in PullPolicy}:
             raise ValueError("Not Value For Pull Always, values must be ['missing', 'never', 'always']")
 
-    docker.compose.up(
+    client = DockerClient(
+        compose_files=[str(compose_path)],
+        compose_project_directory=str(compose_dir)
+    )
+
+    client.compose.up(
         detach=True, 
         build=True,
-        pull=pull,
-        files=[str(compose_path)],
-        project_directory=str(compose_dir) 
+        pull=pull
     )
 
 
@@ -99,6 +102,27 @@ def build_dockerfile(
     )
 
     return image_name
+
+def get_image_exposed_ports(dockerfile_path: str) -> list[str]:
+    """
+    Returns a list of exposed ports from a Dockerfile.
+    """
+    if not Path(dockerfile_path).exists():
+        raise FileNotFoundError("Dockerfile path not found")
+    
+    ports = []
+    with open(dockerfile_path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if line.upper().startswith("EXPOSE"):
+                # Handle "EXPOSE 80 443" or "EXPOSE 80/tcp"
+                parts = line[6:].strip().split()
+                for p in parts:
+                    # Remove protocol if present (e.g. 80/tcp -> 80)
+                    port = p.split("/")[0]
+                    ports.append(port)
+    return ports
+    
 
 def normalize_ports(port_list: list[str]) -> list[tuple]:
     published = []
@@ -149,8 +173,8 @@ def get_project_containers(path: str) -> list[str]:
     """
     project_dir = Path(path).absolute().expanduser().resolve()
     
-    # python_on_whales generic compose support:
-    return docker.compose.ps(project_directory=str(project_dir))
+    client = DockerClient(compose_project_directory=str(project_dir))
+    return client.compose.ps()
 
 
 def get_container_health(container_name: str) -> str | None:
