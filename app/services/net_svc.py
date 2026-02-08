@@ -4,7 +4,7 @@ import socket
 from python_on_whales import docker
 from requests.exceptions import RequestException, ConnectionError, Timeout
 
-from app.utils import ProgressBar
+from app.utils import ProgressBar, TextDisplay
 
 def check_health(
     url: str, 
@@ -80,7 +80,7 @@ def check_internal_tcp(
     port: int,
 ) -> bool:
     try:
-        docker.container.exec(
+        docker.container.execute(
             source_container,
             ["nc", "-z", target_service, str(port)],
         )
@@ -93,8 +93,20 @@ def has_nc(container: str) -> bool:
     """
     Checks if 'nc' (netcat) is available in the container.
     """
-    try:
-        docker.container.exec(container, ["which", "nc"])
-        return True
-    except Exception:
-        return False
+    cmd_variants = [
+        ["which", "nc"],
+        ["sh", "-c", "command -v nc"],
+        ["sh", "-c", "whereis nc"] # fallback
+    ]
+    
+    errors = []
+    for cmd in cmd_variants:
+        try:
+            docker.container.execute(container, cmd)
+            return True
+        except Exception as e:
+            errors.append(f"{cmd}: {e}")
+            continue
+            
+    TextDisplay.debug_text(f"Health Check Debug: 'nc' check failed for {container}. Errors: {errors}")
+    return False

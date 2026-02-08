@@ -161,9 +161,14 @@ def up(
                     if source_container:
                         target_port = get_service_internal_port(svc_def)
                         if target_port:
-                            is_up = check_internal_tcp(source_container.name, name, target_port)
+                            # Use container name as hostname
+                            target_host = name
+                            if name in service_container_map:
+                                target_host = service_container_map[name].name
+                            TextDisplay.info_text(f"Checking {target_host}:{target_port} from {source_container.name}")
+                            is_up = check_internal_tcp(source_container.name, target_host, target_port)
                             status = "UP" if is_up else "DOWN"
-                            details = f"{name}:{target_port} from {source_container.name}"
+                            details = f"{target_host}:{target_port} from {source_container.name}"
                         else:
                             details = "No internal port defined"
                     else:

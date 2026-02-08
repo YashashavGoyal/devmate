@@ -12,6 +12,13 @@ class TextDisplay:
     WARNING = "yellow"
     ERROR = "red"
     SUCCESS = "green"
+    DEBUG = "dim white"
+
+    @staticmethod
+    def debug_text(text: str, style: str = ""):
+        style_n = f"{style} {TextDisplay.DEBUG}".strip()
+        TextDisplay.style_text(text, style_n)
+
 
     @staticmethod
     def style_text(text: str, style: str):
