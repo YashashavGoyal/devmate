@@ -4,7 +4,8 @@ from pathlib import Path
 
 def clone_repo(
     url: str,
-    directory: Path
+    directory: Path,
+    branch: str = None
 ):
     directory = directory.absolute().expanduser().resolve(strict=False)
 
@@ -14,7 +15,10 @@ def clone_repo(
         raise FileExistsError("Directory is not empty")
 
     try:
-        Repo.clone_from(url, directory)
+        if branch:
+            Repo.clone_from(url, directory, branch=branch)
+        else:
+            Repo.clone_from(url, directory)
     except GitCommandError as e:
         raise RuntimeError(f"Git clone failed: {e}") from e
 
