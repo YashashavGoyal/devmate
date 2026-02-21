@@ -103,6 +103,7 @@ def build_dockerfile(
 
     return image_name
 
+
 def get_image_exposed_ports(dockerfile_path: str) -> list[str]:
     """
     Returns a list of exposed ports from a Dockerfile.
@@ -122,7 +123,7 @@ def get_image_exposed_ports(dockerfile_path: str) -> list[str]:
                     port = p.split("/")[0]
                     ports.append(port)
     return ports
-    
+
 
 def normalize_ports(port_list: list[str]) -> list[tuple]:
     published = []
@@ -130,6 +131,7 @@ def normalize_ports(port_list: list[str]) -> list[tuple]:
         host, container = p.split(":", 1)
         published.append((container, host))
     return published
+
 
 def run_container(
     image_name: str,
@@ -195,3 +197,35 @@ def get_container_health(container_name: str) -> str | None:
         return None
 
 
+
+# Logs
+def compose_logs(path: str, tail: int = 100, follow: bool = True):
+    project_dir = Path(path).absolute().expanduser().resolve()
+    client = DockerClient(compose_project_directory=str(project_dir))
+
+    if follow:
+        for line in client.compose.logs(tail=tail, follow=True, stream=True):
+            # python-on-whales returns (container_object, log_line_bytes)
+            if isinstance(line, tuple):
+                print(line[1].decode("utf-8", errors="replace"), end="")
+            else:
+                print(line, end="")
+    else:
+        print(client.compose.logs(tail=tail))
+
+
+def container_logs(container_name: str, tail: int = 100, follow: bool = True):
+    if follow:
+        for line in docker.container.logs(
+            container_name,
+            follow=True,
+            tail=tail,
+            stream=True,
+        ):
+            if isinstance(line, bytes):
+                print(line.decode("utf-8", errors="replace"), end="")
+            else:
+                print(line, end="")
+    else:
+        logs = docker.container.logs(container_name, tail=tail)
+        print(logs)

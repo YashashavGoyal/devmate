@@ -22,7 +22,9 @@ from .docker_svc import (
     get_container_health,
     get_image_exposed_ports,
     ConfigType,
-    PullPolicy
+    PullPolicy,
+    compose_logs,
+    container_logs
 )
 
 __all__ = [
@@ -44,5 +46,7 @@ __all__ = [
     "get_container_health",
     "get_image_exposed_ports",
     "ConfigType",
-    "PullPolicy"
+    "PullPolicy",
+    "compose_logs",
+    "container_logs"
 ]

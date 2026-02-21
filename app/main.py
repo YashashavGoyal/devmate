@@ -2,7 +2,7 @@ from typer import Typer
 from rich.console import Console
 
 from app.utils import PanelDisplay, TextDisplay
-from app.commands import init, health, clone, up, deploy
+from app.commands import init, health, clone, up, deploy, logs
 
 console = Console()
 
@@ -34,14 +34,20 @@ app.command(
 # devmate up
 app.command(
     name="up",
-    short_help="Start the application services.",
+    short_help="Start the application services. (Alias: run)",
 )(up)
 
 # devmate deploy
 app.command(
     name="deploy",
-    short_help="Clones a repo and starts it.",
+    short_help="Clones a repo and starts it. (Alias: dep)",
 )(deploy)
+
+# devmate logs
+app.command(
+    name="logs",
+    short_help="Shows the logs of the application. (Alias: log)",
+)(logs)
 
 # ...... Alias ......
 app.command(
@@ -56,6 +62,11 @@ app.command(
     help="Alias for up"
 )(up)  
 
+app.command(
+    name="log",
+    hidden=True,
+    help="Alias for logs"
+)(logs)
 
 # devmate version
 @app.command(
@@ -63,7 +74,7 @@ app.command(
     help="Show the current [bold cyan]version[/bold cyan] of devmate."
 )
 def version():
-    TextDisplay.style_text("devmate: 0.4.0", style="blue")
+    TextDisplay.style_text("devmate: 0.5.0", style="blue")
 
 
 # devmate about
@@ -80,7 +91,7 @@ def about():
         providing a suite of utilities to manage your projects more efficiently.
         """, 
         border_style="gray50", 
-        subtitle="Version 0.4.0"
+        subtitle="Version 0.5.0"
     )
 
 if __name__ == "__main__": 
