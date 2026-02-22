@@ -207,9 +207,11 @@ def compose_logs(path: str, tail: int = 100, follow: bool = True):
         for line in client.compose.logs(tail=tail, follow=True, stream=True):
             # python-on-whales returns (container_object, log_line_bytes)
             if isinstance(line, tuple):
-                print(line[1].decode("utf-8", errors="replace"), end="")
+                print(line[1].decode("utf-8", errors="replace"), end="", flush=True)
+            elif isinstance(line, bytes):
+                print(line.decode("utf-8", errors="replace"), end="", flush=True)
             else:
-                print(line, end="")
+                print(line, end="", flush=True)
     else:
         print(client.compose.logs(tail=tail))
 
@@ -222,10 +224,12 @@ def container_logs(container_name: str, tail: int = 100, follow: bool = True):
             tail=tail,
             stream=True,
         ):
-            if isinstance(line, bytes):
-                print(line.decode("utf-8", errors="replace"), end="")
+            if isinstance(line, tuple):
+                print(line[1].decode("utf-8", errors="replace"), end="", flush=True)
+            elif isinstance(line, bytes):
+                print(line.decode("utf-8", errors="replace"), end="", flush=True)
             else:
-                print(line, end="")
+                print(line, end="", flush=True)
     else:
         logs = docker.container.logs(container_name, tail=tail)
         print(logs)
