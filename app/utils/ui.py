@@ -150,7 +150,7 @@ class Prompt:
         
         while True:
             try:
-                choice = int(console.input("Select an option by number: "))
+                choice = int(console.input(f"Select an option by number (1-{len(options)}) : "))
                 if 1 <= choice <= len(options):
                     return options[choice - 1]
                 else:

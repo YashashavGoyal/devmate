@@ -2,7 +2,7 @@ from typer import Typer
 from rich.console import Console
 
 from app.utils import PanelDisplay, TextDisplay
-from app.commands import init, health, clone, up, deploy, logs
+from app.commands import init, health, clone, up, deploy, logs, shell
 
 console = Console()
 
@@ -49,6 +49,12 @@ app.command(
     short_help="Shows the logs of the application. (Alias: log)",
 )(logs)
 
+# devmate shell
+app.command(
+    name="shell",
+    short_help="Opens a shell in the application container. (Alias: sh)",
+)(shell)
+
 # ...... Alias ......
 app.command(
     name="dep", 
@@ -68,13 +74,19 @@ app.command(
     help="Alias for logs"
 )(logs)
 
+app.command(
+    name="sh",
+    hidden=True,
+    help="Alias for shell"
+)(shell)
+
 # devmate version
 @app.command(
     name="version",
     help="Show the current [bold cyan]version[/bold cyan] of devmate."
 )
 def version():
-    TextDisplay.style_text("devmate: 0.5.0", style="blue")
+    TextDisplay.style_text("devmate: 0.6.0", style="blue")
 
 
 # devmate about
@@ -91,7 +103,7 @@ def about():
         providing a suite of utilities to manage your projects more efficiently.
         """, 
         border_style="gray50", 
-        subtitle="Version 0.5.0"
+        subtitle="Version 0.6.0"
     )
 
 if __name__ == "__main__": 

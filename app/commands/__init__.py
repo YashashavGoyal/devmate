@@ -4,6 +4,7 @@ from .clone import clone
 from .up import up
 from .deploy import deploy
 from .logs import logs
+from .shell import shell
 
 __all__ = [
     "init",
@@ -11,5 +12,6 @@ __all__ = [
     "clone",
     "up",
     "deploy",
-    "logs"
+    "logs",
+    "shell"
 ]

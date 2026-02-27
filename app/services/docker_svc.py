@@ -169,14 +169,17 @@ def run_container(
     return container_name
 
 
-def get_project_containers(path: str) -> list[str]:
+def get_project_containers(path: str, return_names: bool = False) -> list[str]:
     """
     Returns a list of container objects/names for the given compose project path.
     """
     project_dir = Path(path).absolute().expanduser().resolve()
     
     client = DockerClient(compose_project_directory=str(project_dir))
-    return client.compose.ps()
+    containers = client.compose.ps()
+    if return_names:
+        return [c.name for c in containers]
+    return containers
 
 
 def get_container_health(container_name: str) -> str | None:
@@ -196,6 +199,18 @@ def get_container_health(container_name: str) -> str | None:
     except Exception:
         return None
 
+# shell
+def container_shell(container_name: str, shell_path: str = "/bin/sh"):
+    
+    if not docker.container.exists(container_name):
+        raise RuntimeError(f"Container '{container_name}' not found")
+
+    docker.container.execute(
+        container_name,
+        [shell_path],
+        interactive=True,
+        tty=True,
+    )
 
 
 # Logs
