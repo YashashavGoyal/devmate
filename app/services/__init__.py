@@ -25,7 +25,9 @@ from .docker_svc import (
     PullPolicy,
     compose_logs,
     container_logs,
-    container_shell
+    container_shell,
+    compose_down,
+    container_down
 )
 
 __all__ = [
@@ -50,5 +52,7 @@ __all__ = [
     "PullPolicy",
     "compose_logs",
     "container_logs",
-    "container_shell"
+    "container_shell",
+    "compose_down",
+    "container_down"
 ]

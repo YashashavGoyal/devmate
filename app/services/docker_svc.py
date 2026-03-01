@@ -248,3 +248,54 @@ def container_logs(container_name: str, tail: int = 100, follow: bool = True):
     else:
         logs = docker.container.logs(container_name, tail=tail)
         print(logs)
+
+
+# down
+def compose_down(
+    path: str, 
+    remove_volumes: bool = False, 
+    remove_images: bool = False, 
+    remove_orphans: bool = False
+):
+    try:
+        project_dir = Path(path).absolute().expanduser().resolve()
+        client = DockerClient(compose_project_directory=str(project_dir))
+        
+        rmi = "all" if remove_images else None
+        
+        client.compose.down(
+            volumes=remove_volumes, 
+            remove_images=rmi, 
+            remove_orphans=remove_orphans
+        )
+    except Exception as e:
+        raise e
+
+def container_down(
+    container_name: str, 
+    remove_volumes: bool = False, 
+    remove_images: bool = False, 
+):
+    try:
+        image_to_remove = None
+        if remove_images:
+            try:
+                inspect_data = docker.container.inspect(container_name)
+                image_to_remove = inspect_data.image
+            except Exception:
+                pass
+
+        docker.container.remove(
+            container_name, 
+            volumes=remove_volumes, 
+            force=True
+        )
+
+        if image_to_remove:
+            try:
+                docker.image.remove(image_to_remove, force=True)
+            except Exception:
+                pass
+                
+    except Exception as e:
+        raise e

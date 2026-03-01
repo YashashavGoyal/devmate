@@ -5,6 +5,7 @@ from .up import up
 from .deploy import deploy
 from .logs import logs
 from .shell import shell
+from .down import down
 
 __all__ = [
     "init",
@@ -13,5 +14,6 @@ __all__ = [
     "up",
     "deploy",
     "logs",
-    "shell"
+    "shell",
+    "down"
 ]
