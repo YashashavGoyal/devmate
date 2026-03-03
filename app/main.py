@@ -2,7 +2,7 @@ from typer import Typer
 from rich.console import Console
 
 from app.utils import PanelDisplay, TextDisplay
-from app.commands import init, health, clone, up, deploy, logs, shell, down
+from app.commands import init, health, clone, up, deploy, logs, shell, down, status
 
 console = Console()
 
@@ -16,7 +16,7 @@ app = Typer(
 # devmate init
 app.command(
     name="init",
-    short_help="Checks if essential tools are installed.",
+    short_help="Checks if essential tools are installed. (Alias: doctor)",
 )(init)
 
 # devmate health
@@ -61,7 +61,19 @@ app.command(
     short_help="Opens a shell in the application container. (Alias: sh)",
 )(shell)
 
+# devmate status
+app.command(
+    name="status",
+    short_help="Shows a clean, beautiful table of running containers. (Alias: ps, info)",
+)(status)
+
 # ...... Alias ......
+app.command(
+    name="doctor",
+    hidden=True,
+    help="Alias for init"
+)(init)
+
 app.command(
     name="dep", 
     hidden=True,
@@ -92,13 +104,20 @@ app.command(
     help="Alias for down"
 )(down) 
 
+app.command(
+    name="ps",
+    hidden=True,
+    help="Alias for status"
+)(status)
+
+
 # devmate version
 @app.command(
     name="version",
     help="Show the current [bold cyan]version[/bold cyan] of devmate."
 )
 def version():
-    TextDisplay.style_text("devmate: 0.7.0", style="blue")
+    TextDisplay.style_text("devmate: 1.0.0", style="blue")
 
 
 # devmate about
@@ -120,7 +139,7 @@ def about():
         • Abstraction layer over Docker CLI
         """,
         border_style="gray50", 
-        subtitle="Version 0.7.0"
+        subtitle="Version 1.0.0"
     )
 
 if __name__ == "__main__": 

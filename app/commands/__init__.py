@@ -6,6 +6,7 @@ from .deploy import deploy
 from .logs import logs
 from .shell import shell
 from .down import down
+from .status import status
 
 __all__ = [
     "init",
@@ -15,5 +16,6 @@ __all__ = [
     "deploy",
     "logs",
     "shell",
-    "down"
+    "down",
+    "status"
 ]
