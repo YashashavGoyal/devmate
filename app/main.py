@@ -7,7 +7,7 @@ from app.commands import init, health, clone, up, deploy, logs, shell, down, sta
 console = Console()
 
 app = Typer(
-    name="devmate",
+    name="mate",
     help="Your friendly local development companion.",
     add_completion=True,
     no_args_is_help=True,
@@ -111,25 +111,25 @@ app.command(
 )(status)
 
 
-# devmate version
+# mate version
 @app.command(
     name="version",
-    help="Show the current [bold cyan]version[/bold cyan] of devmate."
+    help="Show the current [bold cyan]version[/bold cyan] of mate."
 )
 def version():
-    TextDisplay.style_text("devmate: 1.0.0", style="blue")
+    TextDisplay.style_text("mate: 1.0.0", style="blue")
 
 
-# devmate about
+# mate about
 @app.command(
     name="about",
-    help="The [bold]about[/bold] command displays information about devmate."
+    help="The [bold]about[/bold] command displays information about mate."
 )
 def about():
     PanelDisplay.print_panel(
-        "About devmate",
+        "About mate",
         """
-        devmate
+        mate
         A powerful developer companion designed to streamline your local workflow,
         automating container management and orchestrating dev environments with ease.
 

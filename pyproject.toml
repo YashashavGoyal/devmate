@@ -17,6 +17,4 @@ dependencies = [
 requires-python = ">=3.10"
 
 [project.scripts]
-devmate = "app.main:app"
-devctl = "app.main:app"
 mate = "app.main:app"

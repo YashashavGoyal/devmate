@@ -192,10 +192,21 @@ class ProgressBar:
         self.progress.update(task.id, completed=task.total)
 
 class TableDisplay:
-    def __init__(self, title: str, columns: list, style: str = "cyan"):
-        self.table = Table(title=title)
+    def __init__(self, title: str, columns: list, style: str = "cyan", no_wrap: bool = True):
+        self.table = Table(title=title, expand=True)
         for col in columns:
-            self.table.add_column(col, style=style, no_wrap=True)
+            if isinstance(col, dict):
+                self.table.add_column(
+                    col.get("header", ""),
+                    style=col.get("style", style),
+                    no_wrap=col.get("no_wrap", no_wrap),
+                    ratio=col.get("ratio"),
+                    min_width=col.get("min_width"),
+                    width=col.get("width"),
+                    overflow=col.get("overflow", "fold")
+                )
+            else:
+                self.table.add_column(col, style=style, no_wrap=no_wrap)
 
     def add_row(self, row: list, style: str = "cyan"):
         self.table.add_row(*row, style=style)

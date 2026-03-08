@@ -31,7 +31,7 @@ def init(
     table_err = TableDisplay("", ["Tool", "Status", "Message"])
     table_ok = TableDisplay("", ["Tool", "Status", "Message"])
 
-    TextDisplay.style_text("DevMate - Initialization", style="white")
+    TextDisplay.style_text("mate - Initialization", style="white")
     TextDisplay.style_text("Checking for essential tools...", style="white")
 
     all_good = True
