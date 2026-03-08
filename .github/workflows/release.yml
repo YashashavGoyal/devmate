@@ -1,0 +1,98 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-binaries:
+    name: Build Binary for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install . pyinstaller
+        
+    - name: Build Standalone Binary
+      run: |
+        pyinstaller --onefile --name mate app/main.py
+        
+    - name: Test Binary
+      shell: bash
+      run: |
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          ./dist/mate.exe --help
+        else
+          ./dist/mate --help
+        fi
+
+    - name: Upload Binary Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: mate-${{ matrix.os }}
+        path: dist/mate*
+
+  release:
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install . build
+        
+    - name: Build Package
+      run: |
+        python -m build
+
+    - name: Download Binary Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: binaries
+
+    - name: Prepare Release Assets
+      shell: bash
+      run: |
+        mkdir -p release_assets
+        cp dist/*.whl release_assets/
+        cp dist/*.tar.gz release_assets/
+        # Move binaries into release_assets with clean names
+        mv binaries/mate-ubuntu-latest/mate release_assets/mate-linux
+        mv binaries/mate-windows-latest/mate.exe release_assets/mate-windows.exe
+        mv binaries/mate-macos-latest/mate release_assets/mate-macos
+        ls -R release_assets/
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          release_assets/*
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
