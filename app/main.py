@@ -1,6 +1,16 @@
 from typer import Typer
 from rich.console import Console
 
+# Force PyInstaller to bundle character detection libraries for requests
+try:
+    import charset_normalizer
+except ImportError:
+    pass
+try:
+    import chardet
+except ImportError:
+    pass
+
 from app.utils import PanelDisplay, TextDisplay
 from app.commands import init, health, clone, up, deploy, logs, shell, down, status
 
@@ -117,7 +127,7 @@ app.command(
     help="Show the current [bold cyan]version[/bold cyan] of mate."
 )
 def version():
-    TextDisplay.style_text("mate: 1.0.2", style="blue")
+    TextDisplay.style_text("mate: 1.0.1", style="blue")
 
 
 # mate about
@@ -139,7 +149,7 @@ def about():
         • Abstraction layer over Docker CLI
         """,
         border_style="gray50", 
-        subtitle="Version 1.0.2"
+        subtitle="Version 1.0.1"
     )
 
 if __name__ == "__main__": 
