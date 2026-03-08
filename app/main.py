@@ -117,7 +117,7 @@ app.command(
     help="Show the current [bold cyan]version[/bold cyan] of mate."
 )
 def version():
-    TextDisplay.style_text("mate: 1.0.1", style="blue")
+    TextDisplay.style_text("mate: 1.0.2", style="blue")
 
 
 # mate about
@@ -139,7 +139,7 @@ def about():
         • Abstraction layer over Docker CLI
         """,
         border_style="gray50", 
-        subtitle="Version 1.0.1"
+        subtitle="Version 1.0.2"
     )
 
 if __name__ == "__main__": 
