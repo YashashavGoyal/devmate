@@ -33,7 +33,7 @@ jobs:
         
     - name: Build Standalone Binary
       run: |
-        pyinstaller --onefile --name mate --hidden-import charset_normalizer --hidden-import chardet app/main.py
+        pyinstaller mate.spec
         
     - name: Test Binary
       shell: bash

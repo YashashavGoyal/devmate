@@ -4,19 +4,25 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "devmate"
-version = "1.0.3"
+version = "1.0.1"
 description = "The friendly internal developer platform CLI."
-dependencies = [
-    "typer[all]",
-    "rich",  
-    "python-on-whales",
-    "requests",
-    "charset-normalizer",
-    "chardet",
-    "GitPython",
-    "PyYAML"
-]
+authors = [{ name = "Yashashav Goyal" }]
+readme = "README.md"
 requires-python = ">=3.10"
+
+dependencies = [
+    "typer[all]>=0.12.3",
+    "rich>=13.7.0",
+    "python-on-whales>=0.80.0",
+    "requests==2.31.0",
+    "charset-normalizer==2.1.1",
+    "GitPython>=3.1.46",
+    "PyYAML>=6.0.3"
+]
 
 [project.scripts]
 mate = "app.main:app"
+
+[project.urls]
+Homepage = "https://github.com/yashashavgoyal/devmate"
+Issues = "https://github.com/yashashavgoyal/devmate/issues"
