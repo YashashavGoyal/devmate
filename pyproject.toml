@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "devmate"
-version = "1.0.1"
+version = "1.1.0"
 description = "The friendly internal developer platform CLI."
 authors = [{ name = "Yashashav Goyal" }]
 readme = "README.md"

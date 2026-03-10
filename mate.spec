@@ -11,7 +11,7 @@ a = Analysis(
     ['app/main.py'],
     pathex=[],
     binaries=binaries_cn + binaries_pow + binaries_git,
-    datas=datas_cn + datas_pow + datas_git,
+    datas=datas_cn + datas_pow + datas_git + [('app/commands/docs/content', 'app/commands/docs/content')],
     hiddenimports=[
         "charset_normalizer",
         "python_on_whales",

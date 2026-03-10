@@ -12,7 +12,7 @@ except ImportError:
     pass
 
 from app.utils import PanelDisplay, TextDisplay
-from app.commands import init, health, clone, up, deploy, logs, shell, down, status
+from app.commands import init, health, clone, up, deploy, logs, shell, down, status, docs
 
 console = Console()
 
@@ -23,6 +23,17 @@ app = Typer(
     no_args_is_help=True,
     rich_markup_mode="rich"
 )
+
+# Adding Sub Typer Instance
+
+# devmate docs
+app.add_typer(
+    docs,
+    name="docs"
+)
+
+# Adding Subcommands
+
 # devmate init
 app.command(
     name="init",
@@ -127,7 +138,7 @@ app.command(
     help="Show the current [bold cyan]version[/bold cyan] of mate."
 )
 def version():
-    TextDisplay.style_text("mate: 1.0.1", style="blue")
+    TextDisplay.style_text("mate: 1.1.0", style="blue")
 
 
 # mate about
@@ -149,7 +160,7 @@ def about():
         • Abstraction layer over Docker CLI
         """,
         border_style="gray50", 
-        subtitle="Version 1.0.1"
+        subtitle="Version 1.1.0"
     )
 
 if __name__ == "__main__": 

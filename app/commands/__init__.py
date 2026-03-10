@@ -7,6 +7,7 @@ from .logs import logs
 from .shell import shell
 from .down import down
 from .status import status
+from .docs.docs import docs
 
 __all__ = [
     "init",
@@ -17,5 +18,6 @@ __all__ = [
     "logs",
     "shell",
     "down",
-    "status"
+    "status",
+    "docs"
 ]
