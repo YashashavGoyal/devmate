@@ -4,6 +4,8 @@ from rich.panel import Panel
 from rich.text import Text
 from rich.json import JSON
 from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeElapsedColumn
+from rich.markdown import Markdown
+from pathlib import Path
 
 console = Console()
 
@@ -214,3 +216,18 @@ class TableDisplay:
     def show(self):
         console.print(self.table)
 
+
+# Documentation rendering logic
+def print_markdown(path: str, pager: bool = False):
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"Documentation not found at {path}")
+    
+    with open(path, "r", encoding="utf-8") as f:
+        md_content = f.read()
+    
+    if pager:
+        with console.pager(styles=True):
+            console.print(Markdown(md_content), width=console.size.width)
+    else:
+        console.print(Markdown(md_content))
